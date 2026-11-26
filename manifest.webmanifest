@@ -1,0 +1,29 @@
+{
+  "name": "ZC Cafe",
+  "short_name": "ZC Cafe",
+  "description": "Ventas, cobros y balance del café",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0f12",
+  "theme_color": "#0b0f12",
+  "icons": [
+    {
+      "src": "https://lh3.googleusercontent.com/d/1-m-pMs2GexU5j0IzjHijdc3YXmOUXxc4=s192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://lh3.googleusercontent.com/d/1VrXkeezOqX2bvd0a53lGc6l2OCpbDr_z=s512",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "https://lh3.googleusercontent.com/d/1VrXkeezOqX2bvd0a53lGc6l2OCpbDr_z=s512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
