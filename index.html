@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ZC Cafe">
+<meta name="theme-color" content="#0b0f12">
+<link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1xFJw3jQQIJP1qQBls4CaYmX_SMR-lDE8=s180">
+<link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1-m-pMs2GexU5j0IzjHijdc3YXmOUXxc4=s192">
+<link rel="manifest" href="manifest.webmanifest">
+<title>ZC Cafe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#0b0f12;color:#eef3f5;font-family:-apple-system,BlinkMacSystemFont,Roboto,sans-serif}
+#boot{padding:90px 24px;text-align:center;color:#93a3ad;max-width:420px;margin:0 auto}
+#boot img{width:120px;height:120px;border-radius:26px;display:block;margin:0 auto 18px}
+#boot input{width:100%;box-sizing:border-box;min-height:46px;border:1px solid #26313a;border-radius:10px;padding:0 12px;background:#141a1f;color:#eef3f5;font-size:20px;margin:14px 0 10px;text-transform:uppercase;letter-spacing:.12em;text-align:center}
+#boot button{width:100%;min-height:50px;border:0;border-radius:12px;font-size:17px;font-weight:600;background:linear-gradient(135deg,#22d3a6,#3aa0ff);color:#04110d}
+</style>
+</head>
+<body>
+<div id="boot">Cargando…</div>
+<script>
+// ZC Cafe: la pantalla y los datos los sirve el script de Google, solo a un móvil activado.
+var API="https://script.google.com/macros/s/AKfycbzMEoWC6W7UNksm1bi7uBnMdIJH5z1cMyQweg3v4JS54mrs5qEU4BSQ778oBdClJAWW6w/exec";
+function lee(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):''}catch(e){return ''}}
+function guarda(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function borra(){try{['zc_cafe_k','zc_cafe_ui','zc_datos'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}}
+var K=lee('zc_cafe_k');
+function pinta(html){
+  var doc=new DOMParser().parseFromString(html,'text/html');
+  doc.querySelectorAll('style').forEach(function(s){document.head.appendChild(s)});
+  var sc=doc.querySelector('script'),codigo=sc.textContent;sc.remove();
+  document.body.innerHTML=doc.body.innerHTML;
+  window.__API=API;(0,eval)(codigo);
+}
+function activar(msg){
+  document.getElementById('boot').innerHTML='<img src="https://lh3.googleusercontent.com/d/1VrXkeezOqX2bvd0a53lGc6l2OCpbDr_z=s512" alt=""><b style="color:#eef3f5;font-size:22px">ZC Cafe</b><p>'+(msg||'Escribe la contraseña de activación. Solo se usa una vez.')+'</p><input id="c" autocomplete="off" placeholder="XXXX-XXXX"><button id="b">Activar</button>';
+  document.getElementById('b').onclick=function(){
+    var c=document.getElementById('c').value.trim().toUpperCase();if(!c)return;this.disabled=true;
+    fetch(API+'?action=activar&codigo='+encodeURIComponent(c)+'&t='+Date.now()).then(function(r){return r.json()}).then(function(d){
+      if(!d.ok){activar(d.error);return}K=d.clave;guarda('zc_cafe_k',K);arranca();
+    }).catch(function(e){activar('Sin conexión: '+e.message)});
+  };
+}
+function arranca(){
+  var g=lee('zc_cafe_ui');
+  if(g)pinta(g);else document.getElementById('boot').textContent='Cargando…';
+  fetch(API+'?action=ui&k='+encodeURIComponent(K)+'&t='+Date.now()).then(function(r){return r.json()}).then(function(d){
+    if(!d.ok){if(/activado/.test(d.error||'')){borra();K='';location.reload()}else if(!g)document.getElementById('boot').textContent=d.error;return}
+    if(d.ui!==g){guarda('zc_cafe_ui',d.ui);if(g)location.reload();else pinta(d.ui)}
+  }).catch(function(e){if(!g)document.getElementById('boot').textContent='Sin conexión con la app: '+e.message});
+}
+if(K)arranca();else activar();
+</script>
+</body>
+</html>
